@@ -1,0 +1,151 @@
+<template>
+    <lightning-card title="SharePoint Files" icon-name="standard:file">
+        <div class="slds-p-horizontal_small">
+            <!-- Configuration Debug Info -->
+            <template if:true={currentConfig}>
+                <div class="slds-m-bottom_small slds-p-all_small slds-border_bottom">
+                    <p class="slds-text-body_small slds-text-color_weak">
+                        <strong>Active Config:</strong> {selectedConfig} | 
+                        <strong>Drive ID:</strong> {selectedDriveId} | 
+                        <strong>Description:</strong> {currentConfig.Description__c}
+                    </p>
+                </div>
+            </template>
+            <!-- Configuration Selection -->
+            <div class="slds-grid slds-gutters slds-m-bottom_small">
+                <div class="slds-col slds-size_1-of-3">
+                    <lightning-combobox
+                        name="config"
+                        label="Configuration"
+                        value={selectedConfig}
+                        placeholder="Choose configuration..."
+                        options={availableConfigs}
+                        onchange={handleConfigChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-3">
+                    <lightning-combobox
+                        name="site"
+                        label="Select SharePoint Site"
+                        value={selectedSiteId}
+                        placeholder="Choose a site..."
+                        options={sites}
+                        onchange={handleSiteChange}>
+                    </lightning-combobox>
+                </div>
+                <div class="slds-col slds-size_1-of-3">
+                    <lightning-input
+                        type="text"
+                        label="Drive ID"
+                        value={selectedDriveId}
+                        onchange={handleDriveIdChange}
+                        placeholder="Enter Drive ID">
+                    </lightning-input>
+                </div>
+            </div>
+
+            <!-- Refresh Button -->
+            <div class="slds-m-bottom_small">
+                <lightning-button
+                    variant="brand"
+                    label="Load Files"
+                    title="Load SharePoint Files"
+                    onclick={handleRefresh}
+                    disabled={isLoading}>
+                </lightning-button>
+            </div>
+
+            <!-- Loading Spinner -->
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading..." size="medium"></lightning-spinner>
+            </template>
+
+            <!-- Error Message -->
+            <template if:true={error}>
+                <div class="slds-notify slds-notify_alert slds-theme_alert-texture slds-theme_error" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    <h2>{error}</h2>
+                </div>
+            </template>
+
+            <!-- Files Data Table -->
+            <template if:true={files}>
+                <template if:false={isLoading}>
+                    <lightning-datatable
+                        key={tableKey}
+                        key-field="id"
+                        data={files}
+                        columns={columns}
+                        hide-checkbox-column="true"
+                        show-row-number-column="false"
+                        onrowaction={handleRowAction}>
+                    </lightning-datatable>
+                </template>
+            </template>
+
+            <!-- No Files Message -->
+            <template if:true={files}>
+                <template if:false={files.length}>
+                    <template if:false={isLoading}>
+                        <div class="slds-text-align_center slds-m-vertical_large">
+                            <p class="slds-text-color_weak">No files found in the selected SharePoint library.</p>
+                        </div>
+                    </template>
+                </template>
+            </template>
+
+            <!-- Version History Modal -->
+            <template if:true={showVersionHistory}>
+                <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open slds-modal_large">
+                    <div class="slds-modal__container">
+                        <header class="slds-modal__header">
+                            <lightning-button-icon
+                                icon-name="utility:close"
+                                onclick={closeVersionHistory}
+                                alternative-text="Close"
+                                variant="bare-inverse"
+                                class="slds-modal__close">
+                            </lightning-button-icon>
+                            <h2 class="slds-text-heading_medium slds-hyphenate">
+                                Version History: {selectedFileName}
+                            </h2>
+                        </header>
+                        <div class="slds-modal__content slds-p-around_medium">
+                            <!-- Download Loading Indicator -->
+                            <template if:true={isDownloading}>
+                                <div class="slds-m-bottom_small">
+                                    <lightning-spinner alternative-text="Getting download link..." size="small"></lightning-spinner>
+                                    <p class="slds-text-align_center slds-m-top_small">Preparing download...</p>
+                                </div>
+                            </template>
+                            
+                            <template if:true={selectedFileVersions.length}>
+                                <lightning-datatable
+                                    key-field="id"
+                                    data={selectedFileVersions}
+                                    columns={versionColumns}
+                                    hide-checkbox-column="true"
+                                    show-row-number-column="true"
+                                    onrowaction={handleVersionRowAction}>
+                                </lightning-datatable>
+                            </template>
+                            <template if:false={selectedFileVersions.length}>
+                                <div class="slds-text-align_center slds-m-vertical_large">
+                                    <p class="slds-text-color_weak">No version history available for this file.</p>
+                                </div>
+                            </template>
+                        </div>
+                        <footer class="slds-modal__footer">
+                            <lightning-button
+                                variant="neutral"
+                                label="Close"
+                                onclick={closeVersionHistory}>
+                            </lightning-button>
+                        </footer>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

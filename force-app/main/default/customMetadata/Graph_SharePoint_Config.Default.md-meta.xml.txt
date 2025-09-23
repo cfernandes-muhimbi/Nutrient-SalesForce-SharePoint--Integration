@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Default</label>
+    <protected>false</protected>
+    <values>
+        <field>DriveId__c</field>
+        <value xsi:type="xsd:string">clavb!FGWYM5Wq60WB-ZdllAPDhj_JgW4OtCxMsIwvWJ_ZCeAt20_iedKPTpFNEUHjPjMr</value>
+    </values>
+    <values>
+        <field>SiteId__c</field>
+        <value xsi:type="xsd:string">044n7.sharepoint.com,33986514-aa95-45eb-8f19-976594030386,6e81c93f-b40e-4c2c-b08c-2f589fd009e0</value>
+    </values>
+    <values>
+        <field>TenantId__c</field>
+        <value xsi:type="xsd:string">33986514-aa95-45eb-8f19-976594030386</value>
+    </values>
+    <values>
+        <field>IsActive__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+    <values>
+        <field>Description__c</field>
+        <value xsi:type="xsd:string">Default SharePoint configuration for main document library</value>
+    </values>
+</CustomMetadata>
